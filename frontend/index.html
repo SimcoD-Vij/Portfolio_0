@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vijaypargavan | Aspiring Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">Vijay<span style="color:var(--text-main)">.</span></div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="btn-group">
+      <a href="/admin/login.html" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Admin</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div data-reveal class="hero-tag">ASPIRING DEVELOPER & AI ENTHUSIAST</div>
+    <h1 data-reveal>VIJAYPARGAVAN <span>R S</span></h1>
+    <p data-reveal>Python Developer specializing in LLM Integration and Backend Systems. Building real-world automation through clean code and practical design.</p>
+    <div data-reveal class="btn-group">
+      <a href="#projects" class="btn btn-primary">View My Work</a>
+      <a href="#contact" class="btn btn-outline">Let's Talk</a>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <div class="container">
+      <h2 data-reveal style="font-size: 2.5rem; margin-bottom: 2rem;">Briefly <span style="color:var(--primary)">About Me</span></h2>
+      <div class="card" data-reveal>
+        <p style="font-size: 1.1rem; color: var(--text-main);">
+          I am a Computer and Communication Engineering student at <strong>Rajalakshmi Institute of Technology</strong> with a passion for building scalable architectures. 
+          Currently focused on <strong>AI-driven automation</strong> and <strong>backend development</strong>.
+        </p>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 1rem;">
+          <div>
+            <span style="color: var(--primary); font-weight: 600;">Education</span>
+            <p style="margin-bottom: 0;">B.E. in CCE<br>RIT Chennai (GPA: 8/10)</p>
+          </div>
+          <div>
+            <span style="color: var(--primary); font-weight: 600;">Location</span>
+            <p style="margin-bottom: 0;">Chennai, India</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience Section -->
+  <section id="experience">
+    <h2 data-reveal style="font-size: 2.5rem; margin-bottom: 1rem;">Work <span style="color:var(--primary)">Experience</span></h2>
+    <div class="timeline">
+      
+      <div class="timeline-item" data-reveal>
+        <div class="timeline-content">
+          <div class="timeline-date">Sept 2023 – Present</div>
+          <h4>SDE Intern – Automation & AI Systems</h4>
+          <p style="color: var(--primary); margin-bottom: 0.5rem;">Hivericks Technologies @ IITM Research Park</p>
+          <p>Developed automated lead conversion workflows using SMS, voice calls, and email pipelines. Integrated Twilio APIs and local LLMs via Ollama for human-like intent detection.</p>
+          <div class="tech-stack">
+            <span class="tech-pill">Python</span>
+            <span class="tech-pill">Twilio</span>
+            <span class="tech-pill">Ollama</span>
+            <span class="tech-pill">REST APIs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item" data-reveal>
+        <div class="timeline-content">
+          <div class="timeline-date">Summer Intern</div>
+          <h4>IT Operations & Logistics Systems Intern</h4>
+          <p style="color: var(--primary); margin-bottom: 0.5rem;">Chennai Port Authority</p>
+          <p>Gained hands-on exposure to logistics operations and vendor management systems. Understood the interaction between logistics and computer network fundamentals.</p>
+          <div class="tech-stack">
+            <span class="tech-pill">Logistics</span>
+            <span class="tech-pill">Networking</span>
+            <span class="tech-pill">Operations</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects">
+    <h2 data-reveal style="font-size: 2.5rem; margin-bottom: 1rem;">Featured <span style="color:var(--primary)">Projects</span></h2>
+    <div class="grid">
+      
+      <!-- Project 1 -->
+      <div class="card" data-reveal>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <i class="fas fa-robot" style="font-size: 2rem; color: var(--primary);"></i>
+          <div class="btn-group">
+            <a href="https://github.com/SimcoD-Vij/Chatbot-NeuroChat" target="_blank" style="color: var(--text-muted);"><i class="fab fa-github"></i></a>
+            <a href="https://huggingface.co/spaces/Hugg-Vij04/Chatbot" target="_blank" style="color: var(--text-muted);"><i class="fas fa-external-link-alt"></i></a>
+          </div>
+        </div>
+        <h3>NeuroChat</h3>
+        <p>LLM-Integrated Hybrid Chatbot using Gradio and Notus-7B. Achieved 90% accuracy improvement and <1.5s response time.</p>
+        <div class="tech-stack">
+          <span class="tech-pill">Gradio</span>
+          <span class="tech-pill">Notus-7B</span>
+          <span class="tech-pill">SQLite</span>
+        </div>
+      </div>
+
+      <!-- Project 2 -->
+      <div class="card" data-reveal>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <i class="fas fa-notes-medical" style="font-size: 2rem; color: var(--secondary);"></i>
+          <div class="btn-group">
+            <a href="https://github.com/SimcoD-Vij/fastnotes-app" target="_blank" style="color: var(--text-muted);"><i class="fab fa-github"></i></a>
+          </div>
+        </div>
+        <h3>FastNotes</h3>
+        <p>Full-stack note-taking app with FastAPI and React. Features JWT auth, PostgreSQL, and SPA routing.</p>
+        <div class="tech-stack">
+          <span class="tech-pill">FastAPI</span>
+          <span class="tech-pill">React</span>
+          <span class="tech-pill">PostgreSQL</span>
+          <span class="tech-pill">JWT</span>
+        </div>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="card" data-reveal>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <i class="fas fa-plug" style="font-size: 2rem; color: #10b981;"></i>
+          <div class="btn-group">
+            <a href="https://github.com/SimcoD-Vij/Lead-converter" target="_blank" style="color: var(--text-muted);"><i class="fab fa-github"></i></a>
+          </div>
+        </div>
+        <h3>Lead Converter</h3>
+        <p>Automated lead conversion workflow using Twilio and local LLMs. Handles SMS, voice, and scheduling.</p>
+        <div class="tech-stack">
+          <span class="tech-pill">Twilio</span>
+          <span class="tech-pill">Python</span>
+          <span class="tech-pill">Webhooks</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills">
+    <h2 data-reveal style="font-size: 2.5rem; margin-bottom: 2rem;">Technical <span style="color:var(--primary)">Toolkit</span></h2>
+    <div class="skills-grid">
+      <div class="skill-item" data-reveal>
+        <i class="fab fa-python"></i>
+        <span>Python</span>
+      </div>
+      <div class="skill-item" data-reveal>
+        <i class="fab fa-java"></i>
+        <span>Java</span>
+      </div>
+      <div class="skill-item" data-reveal>
+        <i class="fas fa-database"></i>
+        <span>SQLite & Postgres</span>
+      </div>
+      <div class="skill-item" data-reveal>
+        <i class="fas fa-brain"></i>
+        <span>LLM (llama-cpp)</span>
+      </div>
+      <div class="skill-item" data-reveal>
+        <i class="fas fa-network-wired"></i>
+        <span>REST APIs</span>
+      </div>
+      <div class="skill-item" data-reveal>
+        <i class="fab fa-git-alt"></i>
+        <span>Git & GitHub</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" style="text-align: center;">
+    <h2 data-reveal style="font-size: 3rem; margin-bottom: 1rem;">Let's <span style="color:var(--primary)">Connect</span></h2>
+    <p data-reveal style="margin-bottom: 3rem; color: var(--text-muted);">Open for internships and collaboration on backend/AI projects.</p>
+    <div class="btn-group" style="justify-content: center;" data-reveal>
+      <a href="mailto:vijaypargavan.r.s.2023.cce@ritchennai.edu.in" class="btn btn-primary"><i class="fas fa-envelope"></i> Email Me</a>
+      <a href="https://github.com/SimcoD-Vij" target="_blank" class="btn btn-outline"><i class="fab fa-github"></i> GitHub</a>
+      <a href="https://www.linkedin.com/in/vijaypargavan-r-s-3b8810331" target="_blank" class="btn btn-outline"><i class="fab fa-linkedin"></i> LinkedIn</a>
+    </div>
+  </section>
+
+  <footer style="padding: 4rem 2rem; text-align: center; border-top: 1px solid var(--border);">
+    <p style="color: var(--text-muted); font-size: 0.8rem;">&copy; 2026 Vijaypargavan R S. Built with passion.</p>
+  </footer>
+
+  <script>
+    // Reveal animation logic
+    const reveals = document.querySelectorAll('[data-reveal]');
+    const revealOnScroll = () => {
+      reveals.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.9) {
+          el.classList.add('active');
+        }
+      });
+    };
+    window.addEventListener('scroll', revealOnScroll);
+    window.addEventListener('load', revealOnScroll);
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>

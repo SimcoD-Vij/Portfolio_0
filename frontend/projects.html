@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects | Vijaypargavan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2" style="background: #3b82f6;"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="/" class="logo" style="text-decoration: none;">Vijay<span style="color:var(--text-main)">.</span></a>
+    <div class="nav-links">
+      <a href="/#about">About</a>
+      <a href="/#experience">Experience</a>
+      <a href="/#projects">Projects</a>
+      <a href="/#skills">Skills</a>
+      <a href="/#contact">Contact</a>
+    </div>
+    <div class="btn-group">
+      <a href="/admin/login.html" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Admin</a>
+    </div>
+  </nav>
+
+  <main style="padding-top: 8rem; max-width: 1100px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; min-height: 80vh;">
+    <h1 data-reveal style="font-size: 3rem; margin-bottom: 1rem;">All <span style="color:var(--primary)">Projects</span></h1>
+    <p data-reveal style="color: var(--text-muted); margin-bottom: 3rem;">A collection of my work in AI, Backend, and Web Systems.</p>
+
+    <!-- Search + filter -->
+    <div data-reveal style="display: flex; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap;">
+      <input id="search" type="text" placeholder="Search projects…" oninput="doFilter()"
+        style="flex: 1; min-width: 200px; background: var(--glass); border: 1px solid var(--border); border-radius: 12px; padding: 0.8rem 1.2rem; color: white; outline: none; transition: 0.3s;"
+        onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'">
+      
+      <select id="domain-filter" onchange="doFilter()"
+        style="background: var(--glass); border: 1px solid var(--border); border-radius: 12px; padding: 0.8rem 1.2rem; color: white; outline: none; cursor: pointer;">
+        <option value="">All domains</option>
+      </select>
+    </div>
+
+    <div id="grid" class="grid">
+      <!-- Loading Skeletons -->
+      <div class="card animate-pulse" style="height: 200px;"></div>
+      <div class="card animate-pulse" style="height: 200px;"></div>
+      <div class="card animate-pulse" style="height: 200px;"></div>
+    </div>
+    
+    <p id="count" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 2rem;"></p>
+  </main>
+
+  <footer style="padding: 4rem 2rem; text-align: center; border-top: 1px solid var(--border); margin-top: 4rem;">
+    <p style="color: var(--text-muted); font-size: 0.8rem;">&copy; 2026 Vijaypargavan R S. Built with passion.</p>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/themes.js"></script>
+  <script src="/js/chatbot.js"></script>
+  <script>
+    let all = [];
+
+    function renderCard(p) {
+      const tech = (p.tech_stack||[]).slice(0,5).map(t =>
+        `<span class="tech-pill">${escHtml(t)}</span>`
+      ).join('');
+      
+      return `
+        <div class="card" data-reveal>
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+            <h3 style="font-size: 1.25rem; margin-bottom: 0;">${escHtml(p.title)}</h3>
+            <span style="font-size: 0.7rem; padding: 0.2rem 0.5rem; background: var(--primary); border-radius: 4px; color: white;">${escHtml(p.domain)}</span>
+          </div>
+          <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text-muted); flex: 1;">${escHtml(p.short_desc||'')}</p>
+          <div style="margin-bottom: 1.5rem;">${tech}</div>
+          <div class="btn-group">
+            ${p.demo_link ? `<a href="${escHtml(p.demo_link)}" target="_blank" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem; flex: 1; text-align: center;">Demo</a>` : ''}
+            <a href="/blog.html?slug=${escHtml(p.slug)}" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.8rem; flex: 1; text-align: center;">Case Study</a>
+          </div>
+        </div>`;
+    }
+
+    function doFilter() {
+      const q = document.getElementById('search').value.toLowerCase();
+      const d = document.getElementById('domain-filter').value;
+      const filtered = all.filter(p =>
+        (!d || p.domain === d) &&
+        (!q || p.title.toLowerCase().includes(q) || (p.short_desc||'').toLowerCase().includes(q) || (p.tech_stack||[]).join(' ').toLowerCase().includes(q))
+      );
+      document.getElementById('grid').innerHTML = filtered.length
+        ? filtered.map(renderCard).join('')
+        : '<p style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">No projects match your search.</p>';
+      document.getElementById('count').textContent = `Showing ${filtered.length} project${filtered.length!==1?'s':''}`;
+      
+      // Re-trigger reveal animation for new elements
+      setTimeout(revealOnScroll, 100);
+    }
+
+    async function init() {
+      try {
+        all = await api('/projects');
+        const domains = [...new Set(all.map(p=>p.domain))];
+        const sel = document.getElementById('domain-filter');
+        domains.forEach(d => { 
+          if(d) {
+            const o=document.createElement('option'); 
+            o.value=d; o.textContent=d; 
+            sel.appendChild(o);
+          }
+        });
+        doFilter();
+      } catch(e) {
+        document.getElementById('grid').innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #ef4444;">Failed to connect to the backend.</p>';
+      }
+    }
+
+    // Reveal animation logic
+    const revealOnScroll = () => {
+      const reveals = document.querySelectorAll('[data-reveal]');
+      reveals.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.95) {
+          el.classList.add('active');
+        }
+      });
+    };
+    window.addEventListener('scroll', revealOnScroll);
+    window.addEventListener('load', revealOnScroll);
+
+    init();
+  </script>
+</body>
+</html>

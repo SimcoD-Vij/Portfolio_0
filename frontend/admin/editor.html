@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor · Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="/css/main.css">
+</head>
+<body class="bg-gray-950 text-white min-h-screen font-sans">
+
+<!-- Sidebar -->
+<aside class="fixed left-0 top-0 h-full w-56 bg-gray-900 border-r border-gray-800 flex flex-col z-20">
+  <div class="p-6 border-b border-gray-800">
+    <a href="/" class="text-base font-semibold text-white">portfolio<span class="text-indigo-400">.</span></a>
+    <p class="text-xs text-gray-500 mt-1">Admin panel</p>
+  </div>
+  <nav class="flex-1 p-4 space-y-1">
+    <a href="/admin/dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 text-sm transition-all">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+      Dashboard
+    </a>
+    <a href="/admin/editor.html" class="flex items-center gap-3 px-3 py-2 rounded-xl bg-indigo-600/20 text-indigo-400 text-sm font-medium">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      <span id="sidebar-label">New project</span>
+    </a>
+  </nav>
+  <div class="p-4 border-t border-gray-800">
+    <button onclick="logout()" class="w-full text-left flex items-center gap-3 px-3 py-2 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-500/10 text-sm transition-all">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      Logout
+    </button>
+  </div>
+</aside>
+
+<!-- Main content -->
+<div class="ml-56 p-8 max-w-4xl">
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 id="page-title" class="text-2xl font-bold">New project</h1>
+      <p class="text-gray-400 text-sm mt-1">Fill in details below. Save as draft to keep private.</p>
+    </div>
+    <div class="flex gap-2">
+      <button id="btn-draft" onclick="saveProject('draft')"
+        class="px-4 py-2 border border-gray-700 hover:border-gray-500 text-gray-300 rounded-xl text-sm transition-all">Save draft</button>
+      <button id="btn-publish" onclick="saveProject('published')"
+        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm transition-all font-medium">Save & Publish</button>
+    </div>
+  </div>
+
+  <!-- ── Project details ── -->
+  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-6">
+    <h2 class="font-medium mb-5 text-sm text-gray-400 uppercase tracking-wider">Project details</h2>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="col-span-2">
+        <label class="label">Title *</label>
+        <input id="f-title" type="text" placeholder="e.g. AI Image Classifier" oninput="autoSlug()"
+          class="field">
+      </div>
+      <div>
+        <label class="label">Domain *</label>
+        <select id="f-domain" class="field">
+          <option value="">Select domain…</option>
+          <option>AI</option><option>Web</option><option>IoT</option>
+          <option>Electronics</option><option>Mobile</option><option>DevOps</option>
+          <option>Other</option>
+        </select>
+        <input id="f-domain-custom" type="text" placeholder="Custom domain name" class="field mt-2 hidden">
+      </div>
+      <div>
+        <label class="label">Slug (auto-generated)</label>
+        <input id="f-slug" type="text" placeholder="auto-generated-from-title" class="field font-mono text-xs text-gray-400">
+      </div>
+      <div class="col-span-2">
+        <label class="label">Short description</label>
+        <textarea id="f-short-desc" rows="2" placeholder="One or two sentences about what this project does…" class="field resize-none"></textarea>
+      </div>
+      <div>
+        <label class="label">Demo URL (optional)</label>
+        <input id="f-demo" type="url" placeholder="https://…" class="field">
+      </div>
+      <div>
+        <label class="label">GitHub URL (optional)</label>
+        <input id="f-github" type="url" placeholder="https://github.com/…" class="field">
+      </div>
+      <div class="col-span-2">
+        <label class="label">Tech stack (press Enter or comma to add)</label>
+        <div id="tech-tags" class="flex flex-wrap gap-2 mb-2"></div>
+        <input id="f-tech-input" type="text" placeholder="e.g. Python, React, Docker…"
+          class="field" onkeydown="addTech(event)">
+        <p class="text-xs text-gray-500 mt-1">Press Enter or comma after each technology</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Blog / Case Study ── -->
+  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-6">
+    <h2 class="font-medium mb-1 text-sm text-gray-400 uppercase tracking-wider">Case study / Blog</h2>
+    <p class="text-xs text-gray-500 mb-5">Each field becomes a section on the public blog page. Leave blank to hide that section.</p>
+    <div class="space-y-5" id="blog-fields">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+
+  <!-- ── Custom sections ── -->
+  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-6">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h2 class="font-medium text-sm text-gray-400 uppercase tracking-wider">Custom sections</h2>
+        <p class="text-xs text-gray-500 mt-1">Add any extra sections you need (Architecture, Demo video, etc.)</p>
+      </div>
+      <button onclick="addCustomSection()" class="px-3 py-1.5 border border-indigo-500/50 text-indigo-400 hover:bg-indigo-500/10 rounded-xl text-xs transition-all">+ Add section</button>
+    </div>
+    <div id="custom-sections" class="space-y-4"></div>
+    <p id="no-sections" class="text-xs text-gray-600 text-center py-4">No custom sections yet. Click "+ Add section" to create one.</p>
+  </div>
+
+  <!-- Save again at bottom -->
+  <div class="flex gap-2 justify-end">
+    <button onclick="saveProject('draft')" class="px-4 py-2 border border-gray-700 hover:border-gray-500 text-gray-300 rounded-xl text-sm transition-all">Save draft</button>
+    <button onclick="saveProject('published')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm transition-all font-medium">Save & Publish</button>
+  </div>
+</div>
+
+<!-- Shared field styles -->
+<style>
+  .label { display: block; font-size: 12px; color: #9ca3af; margin-bottom: 6px; }
+  .field { width: 100%; background: #1f2937; border: 1px solid #374151; border-radius: 12px; padding: 10px 14px; font-size: 14px; color: white; outline: none; transition: border-color .15s; }
+  .field:focus { border-color: #6366f1; }
+  .field::placeholder { color: #6b7280; }
+</style>
+
+<script src="/js/api.js"></script>
+<script src="/js/themes.js"></script>
+<script>
+let projectId = null;
+let blogId = null;
+let techStack = [];
+let customSections = []; // [{id, label, content, position, isNew}]
+
+const BLOG_FIELDS = [
+  { key: 'problem',     label: '🔍 Problem',          placeholder: 'What problem were you solving? Why did it matter?' },
+  { key: 'approach',    label: '🎯 Approach',          placeholder: 'How did you approach solving it? What was your strategy?' },
+  { key: 'tech_detail', label: '🛠 Tech Stack Detail',  placeholder: 'Deep dive into the technologies and why you chose them.' },
+  { key: 'challenges',  label: '⚡ Challenges',        placeholder: 'What were the hardest parts? What broke?' },
+  { key: 'mistakes',    label: '🔧 Mistakes & Fixes',  placeholder: 'What went wrong and how did you fix it? Be specific.' },
+  { key: 'result',      label: '✅ Final Result',      placeholder: 'What did you achieve? Numbers, metrics, outcomes.' },
+  { key: 'learnings',   label: '💡 Key Learnings',     placeholder: 'What would you do differently? What will you carry forward?' },
+];
+
+function renderBlogFields(data = {}) {
+  document.getElementById('blog-fields').innerHTML = BLOG_FIELDS.map(f => `
+    <div>
+      <label class="label">${f.label}</label>
+      <textarea id="blog-${f.key}" rows="4" placeholder="${f.placeholder}" class="field resize-y">${escHtml(data[f.key] || '')}</textarea>
+    </div>`).join('');
+}
+
+function autoSlug() {
+  if (projectId) return; // don't auto-change slug on edit
+  const title = document.getElementById('f-title').value;
+  const slug = title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-');
+  document.getElementById('f-slug').value = slug;
+}
+
+function addTech(e) {
+  if (e.key !== 'Enter' && e.key !== ',') return;
+  e.preventDefault();
+  const input = document.getElementById('f-tech-input');
+  const val = input.value.replace(',', '').trim();
+  if (val && !techStack.includes(val)) {
+    techStack.push(val);
+    renderTechTags();
+  }
+  input.value = '';
+}
+
+function removeTech(tag) {
+  techStack = techStack.filter(t => t !== tag);
+  renderTechTags();
+}
+
+function renderTechTags() {
+  document.getElementById('tech-tags').innerHTML = techStack.map(t =>
+    `<span class="flex items-center gap-1 bg-gray-800 border border-gray-700 text-gray-300 text-xs px-2.5 py-1 rounded-full">
+      ${escHtml(t)}
+      <button onclick="removeTech('${escHtml(t)}')" class="text-gray-500 hover:text-red-400 transition-colors ml-0.5">×</button>
+    </span>`
+  ).join('');
+}
+
+function addCustomSection(data = null) {
+  const id = data ? data.id : null;
+  const section = { tempId: Date.now(), id, label: data?.label || '', content: data?.content || '', position: data?.position || customSections.length, isNew: !id };
+  customSections.push(section);
+  renderCustomSections();
+}
+
+function removeCustomSection(tempId) {
+  customSections = customSections.filter(s => s.tempId !== tempId);
+  renderCustomSections();
+}
+
+function renderCustomSections() {
+  const container = document.getElementById('custom-sections');
+  const noSec = document.getElementById('no-sections');
+  if (customSections.length === 0) { container.innerHTML = ''; noSec.classList.remove('hidden'); return; }
+  noSec.classList.add('hidden');
+  container.innerHTML = customSections.map(s => `
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-4">
+      <div class="flex items-center gap-3 mb-3">
+        <input type="text" value="${escHtml(s.label)}" placeholder="Section title (e.g. Architecture, Demo video)"
+          oninput="updateSection(${s.tempId}, 'label', this.value)"
+          class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+        <button onclick="removeCustomSection(${s.tempId})" class="text-gray-500 hover:text-red-400 transition-colors text-lg px-1">×</button>
+      </div>
+      <textarea rows="4" placeholder="Section content…"
+        oninput="updateSection(${s.tempId}, 'content', this.value)"
+        class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white resize-y focus:outline-none focus:border-indigo-500 placeholder-gray-600">${escHtml(s.content)}</textarea>
+    </div>`).join('');
+}
+
+function updateSection(tempId, field, value) {
+  const s = customSections.find(s => s.tempId === tempId);
+  if (s) s[field] = value;
+}
+
+async function saveProject(forceStatus) {
+  const title = document.getElementById('f-title').value.trim();
+  const domainSelect = document.getElementById('f-domain').value;
+  const domain = domainSelect === 'Other'
+    ? document.getElementById('f-domain-custom').value.trim()
+    : domainSelect;
+
+  if (!title || !domain) { toast('Title and domain are required', 'error'); return; }
+
+  const projectData = {
+    title,
+    domain,
+    short_desc: document.getElementById('f-short-desc').value.trim(),
+    tech_stack: techStack,
+    demo_link: document.getElementById('f-demo').value.trim(),
+    github_link: document.getElementById('f-github').value.trim(),
+  };
+
+  const blogData = {};
+  BLOG_FIELDS.forEach(f => {
+    blogData[f.key] = document.getElementById(`blog-${f.key}`).value.trim();
+  });
+
+  try {
+    let pid = projectId;
+
+    if (!pid) {
+      // Create
+      const res = await api('/admin/projects', { method: 'POST', body: JSON.stringify(projectData) });
+      pid = res.id;
+      projectId = pid;
+      // Reload to get blog id
+      const full = await api(`/admin/projects/${pid}`);
+      blogId = full.blog?.id;
+      history.replaceState({}, '', `?id=${pid}`);
+    } else {
+      // Update
+      await api(`/admin/projects/${pid}`, { method: 'PUT', body: JSON.stringify(projectData) });
+    }
+
+    // Save blog
+    if (blogId) {
+      await api(`/admin/blog/${blogId}`, { method: 'PUT', body: JSON.stringify(blogData) });
+    }
+
+    // Set status
+    const project = await api(`/admin/projects/${pid}`);
+    if (project.status !== forceStatus) {
+      if ((forceStatus === 'published' && project.status === 'draft') ||
+          (forceStatus === 'draft' && project.status === 'published')) {
+        await api(`/admin/projects/${pid}/publish`, { method: 'PUT' });
+      }
+    }
+
+    // Save custom sections
+    for (const s of customSections) {
+      if (!s.label.trim()) continue;
+      if (s.isNew) {
+        const res = await api('/admin/sections', {
+          method: 'POST',
+          body: JSON.stringify({ blog_id: blogId, label: s.label, content: s.content, position: s.position })
+        });
+        s.id = res.id;
+        s.isNew = false;
+      } else {
+        await api(`/admin/sections/${s.id}`, {
+          method: 'PUT',
+          body: JSON.stringify({ label: s.label, content: s.content, position: s.position })
+        });
+      }
+    }
+
+    toast(`Project ${forceStatus === 'published' ? 'published ✓' : 'saved as draft ✓'}`);
+    document.getElementById('page-title').textContent = 'Edit project';
+    document.getElementById('sidebar-label').textContent = 'Edit project';
+
+  } catch(e) {
+    toast(`Save failed: ${e.message}`, 'error');
+  }
+}
+
+async function loadProject(id) {
+  try {
+    const p = await api(`/admin/projects/${id}`);
+    projectId = p.id;
+    blogId = p.blog?.id;
+    techStack = Array.isArray(p.tech_stack) ? p.tech_stack : [];
+
+    document.getElementById('f-title').value = p.title || '';
+    document.getElementById('f-slug').value = p.slug || '';
+    document.getElementById('f-short-desc').value = p.short_desc || '';
+    document.getElementById('f-demo').value = p.demo_link || '';
+    document.getElementById('f-github').value = p.github_link || '';
+
+    // Domain
+    const knownDomains = ['AI','Web','IoT','Electronics','Mobile','DevOps'];
+    if (knownDomains.includes(p.domain)) {
+      document.getElementById('f-domain').value = p.domain;
+    } else {
+      document.getElementById('f-domain').value = 'Other';
+      document.getElementById('f-domain-custom').value = p.domain;
+      document.getElementById('f-domain-custom').classList.remove('hidden');
+    }
+
+    renderTechTags();
+    renderBlogFields(p.blog || {});
+    document.getElementById('page-title').textContent = 'Edit project';
+    document.getElementById('sidebar-label').textContent = 'Edit project';
+
+    // Custom sections
+    if (p.blog?.sections?.length) {
+      p.blog.sections.forEach(s => addCustomSection(s));
+    }
+  } catch(e) {
+    toast(`Failed to load project: ${e.message}`, 'error');
+  }
+}
+
+document.getElementById('f-domain').addEventListener('change', function() {
+  document.getElementById('f-domain-custom').classList.toggle('hidden', this.value !== 'Other');
+});
+
+async function init() {
+  await requireAuth();
+  renderBlogFields();
+  renderCustomSections();
+  const id = urlParam('id');
+  if (id) await loadProject(id);
+}
+
+function logout() { clearToken(); window.location.href = '/admin/login.html'; }
+
+init();
+</script>
+</body>
+</html>

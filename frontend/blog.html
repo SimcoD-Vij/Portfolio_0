@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Study | Vijaypargavan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2" style="background: #a855f7;"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="/" class="logo" style="text-decoration: none;">Vijay<span style="color:var(--text-main)">.</span></a>
+    <a href="/projects.html" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.8rem;">← Back</a>
+  </nav>
+
+  <main style="padding-top: 8rem; max-width: 800px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; min-height: 80vh;">
+    <div id="loading" class="animate-pulse">
+      <div style="height: 20px; width: 100px; background: var(--glass); border-radius: 4px; margin-bottom: 1rem;"></div>
+      <div style="height: 60px; width: 80%; background: var(--glass); border-radius: 8px; margin-bottom: 2rem;"></div>
+      <div style="height: 300px; width: 100%; background: var(--glass); border-radius: 24px;"></div>
+    </div>
+
+    <div id="content" class="hidden" data-reveal></div>
+    
+    <div id="error" class="hidden text-center" style="padding-top: 4rem;">
+      <p style="font-size: 5rem; margin-bottom: 1rem;">📭</p>
+      <h2 style="margin-bottom: 1rem;">Project not found</h2>
+      <p style="color: var(--text-muted); margin-bottom: 2rem;">This case study doesn't exist or isn't published yet.</p>
+      <a href="/projects.html" class="btn btn-primary">Back to projects</a>
+    </div>
+  </main>
+
+  <footer style="padding: 4rem 2rem; text-align: center; border-top: 1px solid var(--border); margin-top: 4rem;">
+    <p style="color: var(--text-muted); font-size: 0.8rem;">&copy; 2026 Vijaypargavan R S. Built with passion.</p>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/themes.js"></script>
+  <script src="/js/chatbot.js"></script>
+  <script>
+    const SECTIONS_CONFIG = [
+      { key: 'problem',    label: '🔍 Problem', icon: '🔍' },
+      { key: 'approach',   label: '🎯 Approach', icon: '🎯' },
+      { key: 'tech_detail',label: '🛠 Tech Stack', icon: '🛠' },
+      { key: 'challenges', label: '⚡ Challenges', icon: '⚡' },
+      { key: 'mistakes',   label: '🔧 Mistakes & Fixes', icon: '🔧' },
+      { key: 'result',     label: '✅ Final Result', icon: '✅' },
+      { key: 'learnings',  label: '💡 Key Learnings', icon: '💡' },
+    ];
+
+    function blogSection(label, content) {
+      if (!content || !content.trim()) return '';
+      return `
+        <div style="margin-bottom: 3rem;">
+          <h2 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-main); border-left: 4px solid var(--primary); padding-left: 1rem;">${label}</h2>
+          <div style="color: var(--text-muted); line-height: 1.8; font-size: 1.05rem; white-space: pre-line;">${escHtml(content)}</div>
+        </div>`;
+    }
+
+    async function load() {
+      const slug = urlParam('slug');
+      if (!slug) { showError(); return; }
+
+      try {
+        const b = await api(`/blog/${slug}`);
+        document.title = `${b.title} | Case Study`;
+
+        const tech = (b.tech_stack||[]).map(t =>
+          `<span class="tech-pill">${escHtml(t)}</span>`
+        ).join('');
+
+        let html = `
+          <div style="margin-bottom: 4rem;">
+            <span style="font-size: 0.75rem; padding: 0.3rem 0.8rem; background: var(--primary); border-radius: 50px; color: white; text-transform: uppercase; letter-spacing: 1px;">${escHtml(b.domain)}</span>
+            <h1 style="font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; margin: 1.5rem 0; line-height: 1.1;">${escHtml(b.title)}</h1>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">${tech}</div>
+            <div class="btn-group">
+              ${b.demo_link?`<a href="${escHtml(b.demo_link)}" target="_blank" class="btn btn-primary">Live Demo <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 0.5rem;"></i></a>`:''}
+              ${b.github_link?`<a href="${escHtml(b.github_link)}" target="_blank" class="btn btn-outline"><i class="fab fa-github"></i> Source Code</a>`:''}
+            </div>
+          </div>
+          <div class="card" style="padding: 3rem; margin-bottom: 4rem;">
+        `;
+
+        // Standard sections
+        SECTIONS_CONFIG.forEach(s => { html += blogSection(s.label, b[s.key]); });
+
+        // Custom sections
+        if (b.sections && b.sections.length > 0) {
+          b.sections.forEach(s => { html += blogSection(s.label, s.content); });
+        }
+
+        html += `
+          </div>
+          <div style="margin-top: 4rem; text-align: center;">
+            <a href="/projects.html" class="btn btn-outline">← Back to all projects</a>
+          </div>`;
+
+        document.getElementById('content').innerHTML = html;
+        document.getElementById('content').classList.remove('hidden');
+        document.getElementById('loading').classList.add('hidden');
+        
+        // Trigger reveal
+        setTimeout(() => document.getElementById('content').classList.add('active'), 100);
+
+      } catch {
+        showError();
+      }
+    }
+
+    function showError() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('error').classList.remove('hidden');
+    }
+
+    load();
+  </script>
+</body>
+</html>
