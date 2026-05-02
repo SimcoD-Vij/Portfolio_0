@@ -1,0 +1,9 @@
+[build]
+  base = "frontend"
+  publish = "."
+
+# Handle routing for the static site
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
